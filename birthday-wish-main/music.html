@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+</head>
+<body>
+    <audio id="background-music" src="music/music.mp3" loop></audio>
+
+    <script>
+        const audio = document.getElementById("background-music");
+
+        // Restore playback position
+        if (sessionStorage.getItem("musicPlayed") === "true") {
+            audio.currentTime = sessionStorage.getItem("musicTime") || 0;
+            audio.play();
+        } else {
+            // Attempt autoplay
+            audio.play().catch(() => {
+                console.warn("Autoplay blocked! Click to play.");
+                document.addEventListener("click", () => {
+                    audio.play();
+                    sessionStorage.setItem("musicPlayed", "true");
+                }, { once: true });
+            });
+        }
+
+        // Save playback position before leaving
+        window.addEventListener("beforeunload", () => {
+            sessionStorage.setItem("musicTime", audio.currentTime);
+        });
+    </script>
+</body>
+</html>
